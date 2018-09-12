@@ -1,0 +1,286 @@
+package poolab;
+
+import controlador.hacer;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import javax.swing.*;
+import modelo.Articulos;
+
+public class Grafica extends JFrame {
+
+    hacer arch = new hacer("Registros.dat");
+    Articulos art;
+    
+    JButton btnConsultar;
+    JButton btnAltas;
+    JButton btnAltas_acep;
+    JButton btnAltas_busc;
+    JButton btnConsultas_acep;
+
+    JPanel pConsultas;
+    JPanel pAltas;
+    JPanel pantalla;
+
+    JLabel LbAltas_precio;
+    JLabel LbAltas_clave;
+    JLabel LbAltas_desc;
+
+    JTextField TextAltas_precio;
+    JTextField TextAltas_clave;
+    JTextField TextAltas_desc;
+
+    JScrollPane ConsultaScroll;
+    JTextArea ConsultArea;
+    Articulos ej;
+
+    public Grafica() {
+        setTitle("PRACTICA#1");
+        setDefaultCloseOperation(3);//EL 3 ES EL EXIT DE LA VENTANA AL DAR X CERRARA
+        setLayout(null);
+        setBounds(0, 0, 800, 500);
+
+        iniciar();
+    }
+
+    public void iniciar() {
+
+        //JLABEL DE BAJAS
+        LbAltas_clave = new JLabel("CLAVE: ");
+        LbAltas_clave.setBounds(20, 20, 50, 50);
+        LbAltas_desc = new JLabel("DESCRIPCION: ");
+        LbAltas_desc.setBounds(20, 50, 100, 50);
+        LbAltas_precio = new JLabel("PRECIO $: ");
+        LbAltas_precio.setBounds(20, 80, 60, 50);
+
+        //TEXTFIELD DE ALTAS
+        TextAltas_clave = new JTextField();
+        TextAltas_clave.setBounds(110, 35, 200, 20);
+        TextAltas_desc = new JTextField();
+        TextAltas_desc.setBounds(110, 65, 200, 20);
+        TextAltas_precio = new JTextField();
+        TextAltas_precio.setBounds(110, 95, 200, 20);
+
+        //BARRA DE DESPLAZAMIENTO DE CONSULTAS
+        ConsultArea = new JTextArea();
+        ConsultaScroll = new JScrollPane(ConsultArea);
+        ConsultaScroll.setBounds(5, 5, 490, 290);
+        ConsultaScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);//BARAS DESPLAZAORAS VERTICAL
+        ConsultaScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);//BARAS DESPLAZAORAS HORIZONTAL
+
+        btnConsultar = new JButton("Consulta");
+        btnConsultar.setBounds(600, 100, 100, 50);
+        btnConsultar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                pAltas.setVisible(false);
+                pConsultas.setVisible(true);
+            }
+        });
+
+        //
+        btnAltas = new JButton("Altas");
+        btnAltas.setBounds(600, 200, 100, 50);
+        btnAltas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                pConsultas.setVisible(false);
+                pAltas.setVisible(true);
+            }
+        });
+
+        //JBUTTON DE BAJAS
+        btnAltas_acep = new JButton("Registrar");
+        btnAltas_acep.setBounds(390, 300, 100, 50);
+        btnAltas_acep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                int clave = Integer.parseInt(TextAltas_clave.getText());
+                double precio = Double.parseDouble(TextAltas_precio.getText());
+                String descripcion = TextAltas_desc.getText();
+
+                ej = new Articulos(clave, descripcion, precio);
+                boolean tro = arch.registrar(ej);
+//                TextAltas_clave.setText("");
+//                TextAltas_desc.setText("");
+//                TextAltas_precio.setText("");
+
+////                if (tro) {
+////                    JOptionPane.showMessageDialog(null, "Registro Listo");
+////                } else {
+////                    JOptionPane.showMessageDialog(null, "Intente de nuevo");
+////                }
+////                pantalla.setVisible(false);
+
+            }
+        });
+        /*btnAltas_busc = new JButton("BUSCAR");
+        btnAltas_busc.setBounds(330, 35, 100, 23);*/
+
+        //JBUTTON "OK" DE CONSULTA
+        btnConsultas_acep = new JButton("OK");
+        btnConsultas_acep.setBounds(400, 300, 100, 50);
+        btnConsultas_acep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ConsultArea.setText(arch.consulta());
+
+            }
+        });
+
+        //PANEL DE CONSULTAS
+        pConsultas = new JPanel();
+        pConsultas.setBounds(10, 10, 520, 400);
+        pConsultas.setLayout(null);
+        pConsultas.setVisible(false);
+        pConsultas.setBackground(Color.MAGENTA);
+
+        //PANEL DE BAJAS
+        pAltas = new JPanel();
+        pAltas.setBounds(10, 10, 520, 400);
+        pAltas.setLayout(null);
+        pAltas.setVisible(false);
+        pAltas.setBackground(Color.LIGHT_GRAY);
+
+        //ADD DE CONSULTAS Y BAJAS
+        pConsultas.add(ConsultaScroll);
+        pConsultas.add(btnConsultas_acep);//
+        pAltas.add(LbAltas_clave);
+        pAltas.add(LbAltas_desc);
+        pAltas.add(LbAltas_precio);
+        pAltas.add(TextAltas_clave);
+        pAltas.add(TextAltas_desc);
+        pAltas.add(TextAltas_precio);
+        pAltas.add(btnAltas_acep);
+        /*pAltas.add(btnAltas_busc);*/
+
+        add(btnConsultar);
+        add(btnAltas);
+        add(pAltas);
+        add(pConsultas);
+    }
+
+    public static void main(String[] args) {
+        Grafica gra = new Grafica();
+        gra.setVisible(true);
+    }
+}
+***************************************************
+//Otra Clase
+
+package modelo;
+
+public class Articulos {
+
+    private int clave;
+    private String descripcion;
+    private double precio;
+
+    public Articulos(int clave, String descripcion,double precio) {
+        this.clave = clave;
+        this.descripcion = descripcion;
+        this.precio = precio;
+    }
+   
+    public int getClave() {
+        return clave;
+    }
+
+    public void setClave(int clave) {
+        this.clave = clave;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+}
+**************************************************************
+package controlador;
+
+import modelo.Articulos;
+import java.io.*;
+
+public class hacer {
+
+//    Articulos a = new Articulos();
+    File arch;
+
+    public hacer(String registros) {
+        
+       arch = new File(registros); 
+    }
+
+    public boolean registrar(Articulos a) {
+        FileOutputStream fluA = null;
+        DataOutputStream escritura = null;
+        boolean registrado = false;
+        
+        try {
+            fluA = new FileOutputStream(arch, true);
+            escritura = new DataOutputStream(fluA);
+            escritura.writeInt(a.getClave());
+            escritura.writeUTF(a.getDescripcion());
+            escritura.writeDouble(a.getPrecio());
+             registrado = true;
+            escritura.close();
+        } catch (IOException ex) {
+               
+            System.out.println("Error Al Escribir En Archivo");
+        } finally {
+            try {
+                fluA.close();
+            } catch (IOException ex) {
+                System.out.println("Error Al Cerrar");
+
+            }
+        }
+        return registrado;
+    }
+
+    public String consulta() {
+       FileInputStream fluB;
+        DataInputStream leer=null;
+        String all = "";
+        //String Linea = "";
+       
+        try {
+            fluB = new FileInputStream(arch);
+            leer = new DataInputStream(fluB);
+            while(true) {
+          
+            all = all +leer.readInt() + "    "+leer.readUTF() +  "    " + leer.readDouble() + "\n";
+            }
+             } catch (FileNotFoundException e) {
+            System.out.println("Archivo no se encontro");
+        } catch (EOFException e) {//fin del archivo
+             } catch (IOException e) {
+            System.out.println("Error al Abrir");
+             }
+         try {
+            leer.close();
+        } catch (IOException e) {
+            System.out.println("Error al abrir para lectura");
+        }
+
+        return all;
+    }
+   
+
+}
+
