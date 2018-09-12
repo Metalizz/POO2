@@ -1,0 +1,291 @@
+package grafico2;
+
+import Cambio.Cambios;
+import java.awt.BorderLayout;
+//import Modelo.Practica2;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import javafx.scene.layout.Border;
+import javax.swing.*;
+
+public class Grafico2 extends JFrame {
+
+    Cambios cambio = new Cambios();
+    JPanel panelPestana1;
+    JPanel panel2Pestana;
+    JPanel panel3Pestana;
+
+    JCheckBox caja1DllsPeso;
+    JCheckBox caja2PesoDlls;
+
+    JButton btn;
+    ButtonGroup grupo;
+
+    JComboBox CajaMunicipio;
+    JComboBox CajaEstado;
+
+    JTextField caja1Tex;
+    JTextField caja2Tex;
+
+
+    JTextArea TexArea;
+
+    JTree arbol1;
+    JTree arbol2;
+
+    JScrollPane sp1;
+    JScrollPane sp2;
+
+    JTabbedPane pestanas = new JTabbedPane();
+
+    public Grafico2() {
+
+        setTitle("PRACTICA#2");
+        setDefaultCloseOperation(3);
+        setBounds(0, 0, 700, 500);
+        setLayout(null);
+        inicioComponentes();
+
+    }
+
+    public void inicioComponentes() {
+
+        pestanas = new JTabbedPane();
+
+        //PESTAÑA#1 CAJA DE CAMBIO
+        panelPestana1 = new JPanel();
+        panelPestana1.setLayout(null);
+        pestanas.addTab("Caja De Cambio", panelPestana1);
+
+        caja1DllsPeso = new JCheckBox();
+        caja1DllsPeso.setBounds(40, 40, 100, 30);
+        caja1DllsPeso.setText("Dolar a peso");
+
+        caja2PesoDlls = new JCheckBox();
+        caja2PesoDlls.setBounds(40, 80, 100, 30);
+        caja2PesoDlls.setText("Peso a Dolar");
+
+        grupo = new ButtonGroup();
+        grupo.add(caja2PesoDlls);
+        caja2PesoDlls.setSelected(rootPaneCheckingEnabled);
+        grupo.add(caja1DllsPeso);
+
+        //BARRA BLANCA PARA ESCRIBIR
+        JLabel cant=new JLabel("Ingrese Cantidad ");
+        cant.setBounds(170, 1, 120, 100);
+        caja1Tex = new JTextField();
+        caja1Tex.setBounds(170, 59, 99, 25);
+
+       
+        caja2Tex = new JTextField();
+        caja2Tex.setBounds(270, 160, 75, 25);
+
+        JButton btn = new JButton("Convertir");
+        btn.setBounds(250, 190, 110, 50);
+        btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (caja1DllsPeso.isSelected()) {
+
+                    double dolares = Double.parseDouble(caja1Tex.getText());
+                    double ps = cambio.ConvertirAPesos(dolares);
+                    DecimalFormat f = new DecimalFormat("##.00");
+                    caja2Tex.setText(f.format(ps));
+
+                } else {
+
+                    double ps = Double.parseDouble(caja1Tex.getText());
+                    double dlls = cambio.ConvertirADolares(ps);
+                    DecimalFormat f = new DecimalFormat("##.00");
+                    caja2Tex.setText(f.format(dlls));
+                }
+            }
+        });
+
+        panelPestana1.add(caja1DllsPeso);
+        panelPestana1.add(caja2PesoDlls);
+        panelPestana1.add(caja1Tex);
+        panelPestana1.add(caja2Tex);
+        panelPestana1.add(btn);
+        panelPestana1.add(cant);
+        
+                
+        
+        //PESTAÑA#2 CIUDADES A SELECCIONAR
+        panel2Pestana = new JPanel();
+        panel2Pestana.setLayout(null);
+        pestanas.addTab("Seleccionar Ciudades", panel2Pestana);
+
+        
+        
+        TexArea = new JTextArea();
+        TexArea.setBounds(200, 250, 220, 50);
+        JLabel estadomunic = new JLabel("ESTADO     -        MUNICIPIO");
+        estadomunic.setBounds(199, 290, 150, 50);
+        
+        
+        
+        CajaMunicipio = new JComboBox();
+        CajaMunicipio.setBounds(150, 150, 150, 40);
+        JLabel MU=new JLabel("SELECCIONE MUNICIPIO");
+        MU.setBounds(160, 90, 150, 50);
+        
+        
+        CajaEstado = new JComboBox();
+        CajaEstado.setBounds(350, 150, 150, 40);
+        JLabel ES=new JLabel("SELECCIONE ESTADO");
+        ES.setBounds(360, 90, 150, 50);
+        CajaEstado.addItem("Baja California");
+        CajaEstado.addItem("Baja California Sur");
+        CajaEstado.addItem("Monterrey");
+        CajaEstado.addItem("Guadalajara");
+        CajaEstado.addItem("Yucatan");
+
+        
+        String estado = (String) CajaEstado.getSelectedItem();
+        String municipios = (String) CajaMunicipio.getSelectedItem();
+        TexArea.setText(estado+" - "+municipios);
+
+        
+        CajaEstado.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                if (CajaEstado.getSelectedItem() == "Baja California") {
+                    CajaMunicipio.removeAllItems();
+                    CajaMunicipio.addItem("Ensenada");
+                    CajaMunicipio.addItem("Mexicali");
+                    CajaMunicipio.addItem("Tecate");
+                    CajaMunicipio.addItem("Tijuana");
+                    CajaMunicipio.addItem("Playas de Rosarito");
+                }
+
+                if (CajaEstado.getSelectedItem() == "Baja California Sur") {
+                    CajaMunicipio.removeAllItems();
+                    CajaMunicipio.addItem("Mulegé");
+                    CajaMunicipio.addItem("Comondú");
+                    CajaMunicipio.addItem("Loreto");
+                    CajaMunicipio.addItem("La Paz");
+                    CajaMunicipio.addItem("Los Cabos");
+                }
+
+                if (CajaEstado.getSelectedItem() == "Monterrey") {
+                    CajaMunicipio.removeAllItems();
+                    CajaMunicipio.addItem("Monterrey");
+                    CajaMunicipio.addItem("Guadalupe");
+                    CajaMunicipio.addItem("San Pedro");
+                    CajaMunicipio.addItem("Santa Catarina");
+                    CajaMunicipio.addItem("San Nicolás");
+                    CajaMunicipio.addItem("Santiago");
+                    CajaMunicipio.addItem("Garcia");
+                    CajaMunicipio.addItem("Cadereyta Jimenez");
+                    CajaMunicipio.addItem("Ciudad Apodaca");
+                    CajaMunicipio.addItem("Ciudad General Escobedo");
+                    CajaMunicipio.addItem("Ciudad Benito Juarez");
+                    CajaMunicipio.addItem("Salinas Victoria");
+
+                }
+
+                if (CajaEstado.getSelectedItem() == "Guadalajara") {
+                    CajaMunicipio.removeAllItems();
+                    CajaMunicipio.addItem("Guadalajara");
+                    CajaMunicipio.addItem("Zapopan");
+                    CajaMunicipio.addItem("San Pedro");
+                    CajaMunicipio.addItem("Tonala");
+                    CajaMunicipio.addItem("El Salto");
+                    CajaMunicipio.addItem("Juanacatlán");
+                    CajaMunicipio.addItem("Ixtlahuacán");
+                    CajaMunicipio.addItem("Tlajomulco de Zúñiga");
+                }
+
+                if (CajaEstado.getSelectedItem() == "Yucatan") {
+                    CajaMunicipio.removeAllItems();
+                    CajaMunicipio.addItem("Abala");
+                    CajaMunicipio.addItem("Acanceh");
+                    CajaMunicipio.addItem("Akil");
+                    CajaMunicipio.addItem("Bokoba");
+                    CajaMunicipio.addItem("Cacalchen");
+                    CajaMunicipio.addItem("Merida");
+                    CajaMunicipio.addItem("Xocchel");
+                }
+
+            }
+        });
+
+        CajaMunicipio.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                String estado = (String) CajaEstado.getSelectedItem();
+                String municipios = (String) CajaMunicipio.getSelectedItem();
+                TexArea.setText(estado+" - "+municipios);
+
+            }
+        });
+
+        panel2Pestana.add(CajaEstado);
+        panel2Pestana.add(CajaMunicipio);
+        panel2Pestana.add(TexArea);
+        panel2Pestana.add(ES);
+        panel2Pestana.add(MU);
+        panel2Pestana.add(estadomunic);
+                
+        
+        
+        //PESTAÑA#3 MOSTRAR ARCHIVOS
+        panel3Pestana = new JPanel();
+        panel3Pestana.setLayout(null);
+
+        pestanas.addTab("Mostrar Archivos", panel3Pestana);
+        pestanas.setBounds(0, 0, 1280, 720);
+
+        String[] nodos = {"ARCHIVO", "ARCHIVO2", "ARCHIVO3"};
+        String[] nodos2 = {"Musica", "Fotos", "Videos", "Documento"};
+
+        arbol1 = new JTree(nodos);
+        arbol2 = new JTree(nodos2);
+
+        sp1 = new JScrollPane(arbol1);
+        sp2 = new JScrollPane(arbol2);
+
+        panel3Pestana.add(sp1, BorderLayout.EAST);
+        panel3Pestana.add(sp2, BorderLayout.WEST);
+
+        add(pestanas);
+    }
+
+
+
+    public static void main(String[] args) {
+
+        Grafico2 gra = new Grafico2();
+        gra.setVisible(true);
+
+    }
+}
+
+*****************************************
+//OTHER CLASS
+
+
+package Cambio;
+
+
+public class Cambios {
+    
+    public double ConvertirADolares(double ps){
+    
+        double dlls=ps/18.48;
+        return dlls;
+     
+    
+}
+   public double ConvertirAPesos(double dlls){
+    
+        double ps=dlls*18.48;
+        return ps;
+        
+         
+    }
+}
+
